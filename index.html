@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./js/pubsub.js"></script>
+    <script>
+        var myModule = (function(){
+
+            var number = 0;
+            var el = undefined;
+            var body = undefined;
+            var unsub = undefined;
+
+            function addNumber(){
+                number++;
+                el.innerHTML = number;
+            }
+
+            function subtractNumber(){
+                number--;
+                el.innerHTML = number;
+                events.publish('sub');
+            }
+
+            function notify(){
+                var p = document.createElement('p');
+                p.innerText = 'subtraction';
+                body.appendChild(p);
+            }
+
+            events.subscribe('sub', notify);
+
+            window.onload = function(){
+                el = document.getElementById('result');
+                body = document.querySelector('body');
+                unsub = document.getElementById('unsub');
+                document.getElementById('btn').addEventListener('click', addNumber);
+                document.getElementById('unsub').addEventListener('click', function(){
+                    events.unsubscribe('sub', notify);
+                });
+
+            };
+
+            return {
+                addNum: addNumber,
+                subNum: subtractNumber
+            };
+
+        })();
+
+
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <button id="btn">Add</button>
+        <button id="unsub">Unsubscribe</button>
+        <p id="result">0</p>
+        <hr>
+    </div>
+</body>
+</html>
